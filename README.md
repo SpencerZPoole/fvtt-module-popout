@@ -4,10 +4,18 @@ PopOut! adds a button to most Foundry VTT actor sheets, item sheets, journal ent
 
 ## Install
 
-Install PopOut! from Foundry's **Add-on Modules** screen with this manifest URL:
+In Foundry, open **Add-on Modules > Install Module**, paste a manifest URL into **Manifest URL**, and install.
+
+Official upstream channel:
 
 ```text
 https://raw.githubusercontent.com/League-of-Foundry-Developers/fvtt-module-popout/master/module.json
+```
+
+Spencer's Foundry V14 compatibility build:
+
+```text
+https://github.com/SpencerZPoole/fvtt-module-popout/releases/latest/download/module.json
 ```
 
 After installation, enable **PopOut!** in your world's **Manage Modules** menu.
