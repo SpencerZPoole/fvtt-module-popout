@@ -73,8 +73,8 @@ PopOut! was written by KaKaRoTo and maintained by Posnet and the League of Found
 
 This module is licensed under the Foundry Virtual Tabletop module development license terms and the Creative Commons Attribution 4.0 International License where applicable. See [LICENSE.txt](./LICENSE.txt).
 
-## Support
+## Donate
 
-If this compatibility fork helped your Foundry V14 workflow, optional support for Spencer's compatibility testing, release packaging, and documentation work is welcome: [paypal.me/mrpooley92](https://paypal.me/mrpooley92).
+If this compatibility fork helped your Foundry V14 workflow, you can donate to support Spencer's compatibility testing, release packaging, and documentation work through [GitHub Sponsors](https://github.com/sponsors/SpencerZPoole) or [PayPal](https://paypal.me/mrpooley92). GitHub Sponsors is best for recurring sponsorships; PayPal works well for one-time donations.
 
 The upstream authors, project history, and license terms remain credited above.
