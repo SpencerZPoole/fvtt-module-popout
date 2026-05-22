@@ -72,3 +72,9 @@ PopOut! also exposes `PopoutModule.popoutApp(app)` and the existing PopOut hooks
 PopOut! was written by KaKaRoTo and maintained by Posnet and the League of Foundry Developers. This compatibility fork preserves the original module id, history, and attribution.
 
 This module is licensed under the Foundry Virtual Tabletop module development license terms and the Creative Commons Attribution 4.0 International License where applicable. See [LICENSE.txt](./LICENSE.txt).
+
+## Support
+
+If this compatibility fork helped your Foundry V14 workflow, optional support for Spencer's compatibility testing, release packaging, and documentation work is welcome: [paypal.me/mrpooley92](https://paypal.me/mrpooley92).
+
+The upstream authors, project history, and license terms remain credited above.
