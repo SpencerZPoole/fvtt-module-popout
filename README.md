@@ -42,7 +42,7 @@ PopOut! works by moving Foundry application DOM nodes into another browser windo
 - Incorporated the keyboard focus fix from upstream PR [#163](https://github.com/League-of-Foundry-Developers/fvtt-module-popout/pull/163), credited to Sigiller, so typing in popped-out input fields is less likely to trigger Foundry hotbar digit shortcuts.
 - Preserved the existing PopOut! module id, behavior, hooks, and browser-only warning.
 
-Upstream pull requests will be proposed after this fork has been locally tested on Foundry V14.
+The upstream Foundry V14 compatibility pull request is open at [League-of-Foundry-Developers/fvtt-module-popout#164](https://github.com/League-of-Foundry-Developers/fvtt-module-popout/pull/164).
 
 ## Module Developer Notes
 
