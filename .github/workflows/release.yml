@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version number (e.g., 2.22)"
+        description: "Version number (e.g., 2.24.0)"
         required: true
         type: string
       release_notes:
@@ -39,8 +39,8 @@ jobs:
 
       - name: Validate version format
         run: |
-          if ! echo "${{ inputs.version }}" | grep -qE '^[0-9]+\.[0-9]+$'; then
-            echo "Error: Version must be in format X.Y (e.g., 2.22)"
+          if ! echo "${{ inputs.version }}" | grep -qE '^[0-9]+\.[0-9]+(\.[0-9]+)?$'; then
+            echo "Error: Version must be in format X.Y or X.Y.Z (e.g., 2.24.0)"
             exit 1
           fi
 
@@ -54,19 +54,25 @@ jobs:
       - name: Validate Foundry release (dry-run)
         env:
           FOUNDRY_VTT_API_KEY: ${{ secrets.FOUNDRY_VTT_API_KEY }}
-        run: npm run foundry:release -- --version "${{ inputs.version }}" --dry-run
+        run: |
+          if [ -n "$FOUNDRY_VTT_API_KEY" ]; then
+            npm run foundry:release -- --version "${{ inputs.version }}" --dry-run
+          else
+            echo "Skipping Foundry registry dry-run; FOUNDRY_VTT_API_KEY is not configured."
+          fi
 
       - name: Update module.json
         run: |
           # Update version
           sed -i 's/"version": "[^"]*"/"version": "${{ inputs.version }}"/' module.json
 
-          # Update download URL
-          sed -i 's|"download": "[^"]*"|"download": "https://github.com/${{ github.repository }}/archive/v${{ inputs.version }}.zip"|' module.json
+          # Update release asset URLs
+          sed -i 's|"manifest": "[^"]*"|"manifest": "https://github.com/${{ github.repository }}/releases/latest/download/module.json"|' module.json
+          sed -i 's|"download": "[^"]*"|"download": "https://github.com/${{ github.repository }}/releases/download/v${{ inputs.version }}/module.zip"|' module.json
 
           # Verify changes
           echo "Updated module.json:"
-          grep -E '"version"|"download"' module.json
+          grep -E '"version"|"manifest"|"download"' module.json
 
       - name: Commit changes
         run: |
@@ -85,11 +91,18 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          zip -r module.zip module.json popout.js lang LICENSE.txt README.md
           gh release create "v${{ inputs.version }}" \
             --title "v${{ inputs.version }}" \
-            --notes "${{ inputs.release_notes }}"
+            --notes "${{ inputs.release_notes }}" \
+            module.json module.zip
 
       - name: Notify Foundry registry
         env:
           FOUNDRY_VTT_API_KEY: ${{ secrets.FOUNDRY_VTT_API_KEY }}
-        run: npm run foundry:release -- --version "${{ inputs.version }}"
+        run: |
+          if [ -n "$FOUNDRY_VTT_API_KEY" ]; then
+            npm run foundry:release -- --version "${{ inputs.version }}"
+          else
+            echo "Skipping Foundry registry notification; FOUNDRY_VTT_API_KEY is not configured."
+          fi

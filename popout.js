@@ -34,6 +34,39 @@ class PopoutModule {
     this.ID = (foundry?.utils?.randomID || randomID)(24);
   }
 
+  static isHTMLElement(element) {
+    const HTMLElementCtor = element?.ownerDocument?.defaultView?.HTMLElement;
+    return Boolean(HTMLElementCtor && element instanceof HTMLElementCtor);
+  }
+
+  static isKeyboardTypingContext(element) {
+    if (!PopoutModule.isHTMLElement(element)) return false;
+
+    if (["", "true"].includes(element.dataset.keyboardFocus)) return true;
+    if (element.dataset.keyboardFocus === "false") return false;
+    if (["INPUT", "SELECT", "TEXTAREA"].includes(element.tagName)) return true;
+    if (element.isContentEditable) return true;
+    if (element.tagName === "BUTTON" && element.form) return true;
+    return false;
+  }
+
+  static keyboardEventTargetsTypingContext(event) {
+    if (PopoutModule.isKeyboardTypingContext(event.target)) return true;
+
+    return (
+      typeof event.composedPath === "function" &&
+      event
+        .composedPath()
+        .some((element) => PopoutModule.isKeyboardTypingContext(element))
+    );
+  }
+
+  static cloneElementContents(target, source) {
+    target.replaceChildren(
+      ...Array.from(source.childNodes, (node) => node.cloneNode(true)),
+    );
+  }
+
   log(msg, ...args) {
     if (game && game.settings.get("popout", "verboseLogs")) {
       const color = "background: #6699ff; color: #000; font-size: larger;";
@@ -267,17 +300,10 @@ class PopoutModule {
 
       // Helper function to check if an element has focus based on version
       const checkElementFocus = (element) => {
-        if (!(element instanceof HTMLElement)) return false;
+        if (!PopoutModule.isHTMLElement(element)) return false;
 
         if (isV13) {
-          // v13 logic with dataset and specific checks
-          if (["", "true"].includes(element.dataset.keyboardFocus)) return true;
-          if (element.dataset.keyboardFocus === "false") return false;
-          if (["INPUT", "SELECT", "TEXTAREA"].includes(element.tagName))
-            return true;
-          if (element.isContentEditable) return true;
-          if (element.tagName === "BUTTON" && element.form) return true;
-          return false;
+          return PopoutModule.isKeyboardTypingContext(element);
         } else {
           // v12 logic - any focused HTMLElement counts
           return true;
@@ -450,7 +476,10 @@ class PopoutModule {
         content !== activePopoutTooltip.innerHTML &&
         !isLoadingSpinner
       ) {
-        activePopoutTooltip.innerHTML = content;
+        PopoutModule.cloneElementContents(
+          activePopoutTooltip,
+          mainTooltipElement,
+        );
         popoutModule.log("Mirrored content to popout tooltip");
       }
     });
@@ -547,7 +576,7 @@ class PopoutModule {
       // the class is already present, so no mutation would fire).
       if (isPopout && mainTooltipElement !== this.tooltip) {
         mainTooltipElement.classList.remove("active");
-        mainTooltipElement.innerHTML = this.tooltip.innerHTML;
+        PopoutModule.cloneElementContents(mainTooltipElement, this.tooltip);
         // Hide the main tooltip - it's only used to trigger dnd5e's observer
         mainTooltipElement.style.visibility = "hidden";
         mainTooltipElement.style.pointerEvents = "none";
@@ -573,7 +602,7 @@ class PopoutModule {
       if (activePopoutTooltip && activePopoutTooltip !== mainTooltipElement) {
         try {
           mainTooltipElement.classList.remove("active");
-          mainTooltipElement.innerHTML = "";
+          mainTooltipElement.replaceChildren();
           // Restore visibility for normal tooltip usage
           mainTooltipElement.style.visibility = "";
           mainTooltipElement.style.pointerEvents = "";
@@ -806,8 +835,9 @@ class PopoutModule {
               headerButton.className =
                 "header-control icon popout-module-button";
               headerButton.type = "button";
-              headerButton.innerHTML =
-                '<i class="fas fa-external-link-alt"></i>';
+              const icon = document.createElement("i");
+              icon.className = "fas fa-external-link-alt";
+              headerButton.append(icon);
               headerButton.setAttribute(
                 "data-tooltip",
                 game.i18n.localize("POPOUT.PopOut"),
@@ -1551,6 +1581,8 @@ class PopoutModule {
       // Forward keyboard events to main window for keybinding support
       // NOTE: v13 changed the keyboard API, #handleKeyboardEvent is now private
       popout.addEventListener("keydown", (event) => {
+        if (PopoutModule.keyboardEventTargetsTypingContext(event)) return;
+
         if (window.keyboard && window.keyboard._handleKeyboardEvent) {
           // v12 and earlier - use internal method
           window.keyboard._handleKeyboardEvent(event, false);
@@ -1561,6 +1593,8 @@ class PopoutModule {
         }
       });
       popout.addEventListener("keyup", (event) => {
+        if (PopoutModule.keyboardEventTargetsTypingContext(event)) return;
+
         if (window.keyboard && window.keyboard._handleKeyboardEvent) {
           // v12 and earlier - use internal method
           window.keyboard._handleKeyboardEvent(event, true);
