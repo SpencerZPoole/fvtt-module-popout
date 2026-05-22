@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version number (e.g., 2.22)"
+        description: "Version number (e.g., 2.24.0)"
         required: true
         type: string
       release_notes:
@@ -39,30 +39,38 @@ jobs:
 
       - name: Validate version format
         run: |
-          if ! echo "${{ inputs.version }}" | grep -qE '^[0-9]+\.[0-9]+$'; then
-            echo "Error: Version must be in format X.Y (e.g., 2.22)"
+          if ! echo "${{ inputs.version }}" | grep -qE '^v?[0-9]+\.[0-9]+(\.[0-9]+)?$'; then
+            echo "Error: Version must be in format X.Y, X.Y.Z, vX.Y, or vX.Y.Z (e.g., 2.24.0 or v2.24.0)"
             exit 1
           fi
 
+      - name: Normalize version
+        id: version
+        run: |
+          VERSION="${{ inputs.version }}"
+          VERSION="${VERSION#v}"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "tag=v${VERSION}" >> "$GITHUB_OUTPUT"
+
       - name: Check tag doesn't exist
         run: |
-          if git ls-remote --tags origin | grep -q "refs/tags/v${{ inputs.version }}$"; then
-            echo "Error: Tag v${{ inputs.version }} already exists"
+          if git ls-remote --tags origin | grep -q "refs/tags/${{ steps.version.outputs.tag }}$"; then
+            echo "Error: Tag ${{ steps.version.outputs.tag }} already exists"
             exit 1
           fi
 
       - name: Validate Foundry release (dry-run)
         env:
           FOUNDRY_VTT_API_KEY: ${{ secrets.FOUNDRY_VTT_API_KEY }}
-        run: npm run foundry:release -- --version "${{ inputs.version }}" --dry-run
+        run: npm run foundry:release -- --version "${{ steps.version.outputs.version }}" --dry-run
 
       - name: Update module.json
         run: |
           # Update version
-          sed -i 's/"version": "[^"]*"/"version": "${{ inputs.version }}"/' module.json
+          sed -i 's/"version": "[^"]*"/"version": "${{ steps.version.outputs.version }}"/' module.json
 
           # Update download URL
-          sed -i 's|"download": "[^"]*"|"download": "https://github.com/${{ github.repository }}/archive/v${{ inputs.version }}.zip"|' module.json
+          sed -i 's|"download": "[^"]*"|"download": "https://github.com/${{ github.repository }}/archive/refs/tags/${{ steps.version.outputs.tag }}.zip"|' module.json
 
           # Verify changes
           echo "Updated module.json:"
@@ -73,23 +81,23 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add module.json
-          git commit -m "Release v${{ inputs.version }}"
+          git commit -m "Release ${{ steps.version.outputs.tag }}"
 
       - name: Create and push tag
         run: |
-          git tag "v${{ inputs.version }}"
+          git tag "${{ steps.version.outputs.tag }}"
           git push origin HEAD:${{ github.ref_name }}
-          git push origin "v${{ inputs.version }}"
+          git push origin "${{ steps.version.outputs.tag }}"
 
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create "v${{ inputs.version }}" \
-            --title "v${{ inputs.version }}" \
+          gh release create "${{ steps.version.outputs.tag }}" \
+            --title "${{ steps.version.outputs.tag }}" \
             --notes "${{ inputs.release_notes }}"
 
       - name: Notify Foundry registry
         env:
           FOUNDRY_VTT_API_KEY: ${{ secrets.FOUNDRY_VTT_API_KEY }}
-        run: npm run foundry:release -- --version "${{ inputs.version }}"
+        run: npm run foundry:release -- --version "${{ steps.version.outputs.version }}"

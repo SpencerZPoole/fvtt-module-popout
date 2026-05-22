@@ -25,7 +25,7 @@ async function release({ version, dryRun }) {
   // Use the manifest URL from module.json (always points to master)
   const manifest = module.manifest;
 
-  // Foundry expects version with 'v' prefix (e.g., v2.22)
+  // Foundry expects version with 'v' prefix (e.g., v2.24.0)
   const versionWithPrefix = version.startsWith("v") ? version : `v${version}`;
 
   const payload = {
@@ -34,7 +34,7 @@ async function release({ version, dryRun }) {
     release: {
       version: versionWithPrefix,
       manifest,
-      notes: `https://github.com/League-of-Foundry-Developers/fvtt-module-popout/releases/tag/${versionWithPrefix}`,
+      notes: `${module.url}/releases/tag/${versionWithPrefix}`,
       compatibility: module.compatibility,
     },
   };
