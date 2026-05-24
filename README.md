@@ -4,6 +4,10 @@ PopOut! adds a button to most Foundry VTT actor sheets, item sheets, journal ent
 
 This fork is a Foundry V14 compatibility release of the original PopOut! module.
 
+**Support:** If this compatibility fork helps your Foundry V14 workflow, donations are optional and support Spencer's compatibility testing, release packaging, and documentation. Upstream author and maintainer credit remains below.
+
+[![Sponsor on GitHub](https://img.shields.io/badge/GitHub%20Sponsors-Donate-ea4aaa?style=flat&logo=githubsponsors&logoColor=white)](https://github.com/sponsors/SpencerZPoole) [![Donate with PayPal](https://img.shields.io/badge/PayPal-One--time%20donation-00457C?style=flat&logo=paypal&logoColor=white)](https://paypal.me/mrpooley92)
+
 ## Install
 
 Install this fork from Foundry's **Add-on Modules** screen with this manifest URL:
@@ -72,12 +76,3 @@ PopOut! also exposes `PopoutModule.popoutApp(app)` and the existing PopOut hooks
 PopOut! was written by KaKaRoTo and maintained by Posnet and the League of Foundry Developers. This compatibility fork preserves the original module id, history, and attribution.
 
 This module is licensed under the Foundry Virtual Tabletop module development license terms and the Creative Commons Attribution 4.0 International License where applicable. See [LICENSE.txt](./LICENSE.txt).
-
-## Donate
-
-If this compatibility fork helped your Foundry V14 workflow, donations are welcome to support Spencer's compatibility testing, release packaging, and documentation work. GitHub Sponsors is best for recurring sponsorships; PayPal works well for one-time donations.
-
-[![Sponsor on GitHub](https://img.shields.io/badge/GitHub%20Sponsors-Donate-ea4aaa?style=flat&logo=githubsponsors&logoColor=white)](https://github.com/sponsors/SpencerZPoole)
-[![Donate with PayPal](https://img.shields.io/badge/PayPal-One--time%20donation-00457C?style=flat&logo=paypal&logoColor=white)](https://paypal.me/mrpooley92)
-
-The upstream authors, project history, and license terms remain credited above.
