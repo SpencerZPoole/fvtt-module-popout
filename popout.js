@@ -346,18 +346,23 @@ class PopoutModule {
       Hooks.once("ready", overrideHasFocus);
     }
 
-    // NOTE(posnet: 2020-07-12): we need to initialize TinyMCE to ensure its plugins,
-    // are loaded into the frame. Otherwise our popouts will not be able to access
-    // the lazy loaded JavaScript mce plugins.
-    // This will affect any module that lazy loads JavaScript. And require special handling.
-
-    const elem = $(
-      `<div style="display: none;"><p id="mce_init"> foo </p></div>`,
-    );
-    $("body").append(elem);
-    const config = { target: elem[0], plugins: CONFIG.TinyMCE.plugins };
-    const editor = await tinyMCE.init(config);
-    editor[0].remove();
+    // COMPAT(v14): TinyMCE is no longer present in every Foundry generation.
+    // Older Foundry versions used this preload to make TinyMCE plugins available
+    // inside popped-out editors; newer ProseMirror-only builds should skip it.
+    const tinyMCEPlugins = CONFIG?.TinyMCE?.plugins;
+    if (globalThis.tinyMCE?.init && tinyMCEPlugins) {
+      const elem = $(
+        `<div style="display: none;"><p id="mce_init"> foo </p></div>`,
+      );
+      $("body").append(elem);
+      try {
+        const config = { target: elem[0], plugins: tinyMCEPlugins };
+        const editor = await tinyMCE.init(config);
+        editor[0]?.remove();
+      } finally {
+        elem.remove();
+      }
+    }
   }
 
   /**

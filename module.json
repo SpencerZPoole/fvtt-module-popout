@@ -2,7 +2,7 @@
   "id": "popout",
   "title": "PopOut!",
   "description": "<p>Compatibility fork of PopOut! for Foundry V14 users whose systems still use legacy Application V1 sheets that do not receive Foundry's native ApplicationV2 pop-out button.</p><p>Adds a PopOut! button to most actor sheets, item sheets, journal entries, and applications so they can be opened in a separate browser window.</p>",
-  "version": "2.24.1",
+  "version": "2.24.2",
   "authors": [{ "name": "KaKaRoTo" }, { "name": "Posnet" }],
   "scripts": ["./popout.js"],
   "styles": [],
@@ -48,7 +48,7 @@
   "readme": "https://github.com/SpencerZPoole/fvtt-module-popout#readme",
   "url": "https://github.com/SpencerZPoole/fvtt-module-popout",
   "manifest": "https://github.com/SpencerZPoole/fvtt-module-popout/releases/latest/download/module.json",
-  "download": "https://github.com/SpencerZPoole/fvtt-module-popout/releases/download/v2.24.1/module.zip",
+  "download": "https://github.com/SpencerZPoole/fvtt-module-popout/releases/download/v2.24.2/module.zip",
   "bugs": "https://github.com/SpencerZPoole/fvtt-module-popout/issues",
   "compatibility": {
     "minimum": "12",

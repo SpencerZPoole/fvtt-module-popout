@@ -31,14 +31,14 @@ https://github.com/SpencerZPoole/fvtt-module-popout/releases/latest/download/mod
 The release zip for this build is:
 
 ```text
-https://github.com/SpencerZPoole/fvtt-module-popout/releases/download/v2.24.1/module.zip
+https://github.com/SpencerZPoole/fvtt-module-popout/releases/download/v2.24.2/module.zip
 ```
 
 After installation, enable **PopOut!** in your world's **Manage Modules** menu.
 
 ## Compatibility
 
-- Module version: `2.24.1`
+- Module version: `2.24.2`
 - Foundry minimum: `12`
 - Verified with Foundry: `14.362`
 - Tested environment: Foundry `14.362` with the D35E system `3.0.2`
@@ -51,6 +51,11 @@ PopOut! does not work in Foundry's Electron desktop application window. If you h
 PopOut! works by moving Foundry application DOM nodes into another browser window. That makes broad compatibility possible, but some sheets or modules that rely heavily on global `document` lookups, jQuery plugins, React, Svelte, Vue, or other framework-specific assumptions may still have limitations when popped out.
 
 ## Changes In This Fork
+
+### `2.24.2`
+
+- Fixed Foundry V14 startup compatibility by skipping PopOut!'s legacy TinyMCE plugin preload when TinyMCE is not available.
+- Supersedes `2.24.1`, which clarified the public fork positioning but could still trigger a V14 startup error from the old TinyMCE preload path.
 
 ### `2.24.1`
 
