@@ -61,6 +61,13 @@ class PopoutModule {
     );
   }
 
+  static getKeyboardEventContext(event, isKeyUp) {
+    const KeyboardManagerCtor =
+      foundry?.helpers?.interaction?.KeyboardManager ??
+      globalThis.KeyboardManager;
+    return KeyboardManagerCtor?.getKeyboardEventContext?.(event, isKeyUp);
+  }
+
   static cloneElementContents(target, source) {
     target.replaceChildren(
       ...Array.from(source.childNodes, (node) => node.cloneNode(true)),
@@ -1593,8 +1600,8 @@ class PopoutModule {
           window.keyboard._handleKeyboardEvent(event, false);
         } else if (game.keyboard && game.keyboard._processKeyboardContext) {
           // v13+ - use protected _processKeyboardContext with static getKeyboardEventContext
-          const context = KeyboardManager.getKeyboardEventContext(event, false);
-          game.keyboard._processKeyboardContext(context);
+          const context = PopoutModule.getKeyboardEventContext(event, false);
+          if (context) game.keyboard._processKeyboardContext(context);
         }
       });
       popout.addEventListener("keyup", (event) => {
@@ -1605,8 +1612,8 @@ class PopoutModule {
           window.keyboard._handleKeyboardEvent(event, true);
         } else if (game.keyboard && game.keyboard._processKeyboardContext) {
           // v13+ - use protected _processKeyboardContext with static getKeyboardEventContext
-          const context = KeyboardManager.getKeyboardEventContext(event, true);
-          game.keyboard._processKeyboardContext(context);
+          const context = PopoutModule.getKeyboardEventContext(event, true);
+          if (context) game.keyboard._processKeyboardContext(context);
         }
       });
 
