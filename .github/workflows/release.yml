@@ -51,16 +51,6 @@ jobs:
             exit 1
           fi
 
-      - name: Validate Foundry release (dry-run)
-        env:
-          FOUNDRY_VTT_API_KEY: ${{ secrets.FOUNDRY_VTT_API_KEY }}
-        run: |
-          if [ -n "$FOUNDRY_VTT_API_KEY" ]; then
-            npm run foundry:release -- --version "${{ inputs.version }}" --dry-run
-          else
-            echo "Skipping Foundry registry dry-run; FOUNDRY_VTT_API_KEY is not configured."
-          fi
-
       - name: Update module.json
         run: |
           # Update version
@@ -96,13 +86,3 @@ jobs:
             --title "v${{ inputs.version }}" \
             --notes "${{ inputs.release_notes }}" \
             module.json module.zip
-
-      - name: Notify Foundry registry
-        env:
-          FOUNDRY_VTT_API_KEY: ${{ secrets.FOUNDRY_VTT_API_KEY }}
-        run: |
-          if [ -n "$FOUNDRY_VTT_API_KEY" ]; then
-            npm run foundry:release -- --version "${{ inputs.version }}"
-          else
-            echo "Skipping Foundry registry notification; FOUNDRY_VTT_API_KEY is not configured."
-          fi

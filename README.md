@@ -2,11 +2,23 @@
 
 PopOut! adds a button to most Foundry VTT actor sheets, item sheets, journal entries, and application windows so they can be opened in a separate browser window. It is useful for multi-monitor setups or for keeping frequently referenced sheets visible while working elsewhere in Foundry.
 
-This fork is a Foundry V14 compatibility release of the original PopOut! module.
+This fork is a Foundry V14 compatibility bridge for users whose game systems still use legacy Application V1 sheets. Foundry V14 has native pop-out support for ApplicationV2 apps, but legacy V1 actor and item sheets do not automatically receive that native button.
 
 **Support:** If this compatibility fork helps your Foundry V14 workflow, donations are optional and support Spencer's compatibility testing, release packaging, and documentation. Upstream author and maintainer credit remains below.
 
 [![Sponsor on GitHub](https://img.shields.io/badge/GitHub%20Sponsors-Donate-ea4aaa?style=flat&logo=githubsponsors&logoColor=white)](https://github.com/sponsors/SpencerZPoole) [![Donate with PayPal](https://img.shields.io/badge/PayPal-One--time%20donation-00457C?style=flat&logo=paypal&logoColor=white)](https://paypal.me/mrpooley92)
+
+## Who Should Use This Fork?
+
+Use this fork if all of the following are true:
+
+- You are running Foundry V14 in a regular browser.
+- Your game system still uses legacy Application V1 actor, item, or document sheets.
+- Foundry's native ApplicationV2 pop-out button does not appear on the sheets you actually use at the table.
+
+This is not a replacement for Foundry's native V14 pop-out feature. It is a transition bridge for systems such as D35E, PF2e during migration, or other systems/modules whose sheets have not fully moved to ApplicationV2 yet.
+
+This fork keeps the original module id, `popout`, so it behaves as a drop-in direct-manifest install. It is not submitted as a separate Foundry package listing.
 
 ## Install
 
@@ -19,24 +31,33 @@ https://github.com/SpencerZPoole/fvtt-module-popout/releases/latest/download/mod
 The release zip for this build is:
 
 ```text
-https://github.com/SpencerZPoole/fvtt-module-popout/releases/download/v2.24.0/module.zip
+https://github.com/SpencerZPoole/fvtt-module-popout/releases/download/v2.24.1/module.zip
 ```
 
 After installation, enable **PopOut!** in your world's **Manage Modules** menu.
 
 ## Compatibility
 
-- Module version: `2.24.0`
+- Module version: `2.24.1`
 - Foundry minimum: `12`
 - Verified with Foundry: `14.362`
 - Tested environment: Foundry `14.362` with the D35E system `3.0.2`
 - Browser support: regular web browsers only
+
+Foundry V14's native pop-out support is ApplicationV2-based. This fork remains useful where your system's live sheets are still legacy V1 applications and therefore do not expose the native pop-out control.
 
 PopOut! does not work in Foundry's Electron desktop application window. If you host Foundry locally, use a browser such as Chrome pointed at your Foundry server instead.
 
 PopOut! works by moving Foundry application DOM nodes into another browser window. That makes broad compatibility possible, but some sheets or modules that rely heavily on global `document` lookups, jQuery plugins, React, Svelte, Vue, or other framework-specific assumptions may still have limitations when popped out.
 
 ## Changes In This Fork
+
+### `2.24.1`
+
+- Clarified this fork's public purpose: a Foundry V14 bridge for systems still using legacy Application V1 sheets.
+- Documented that Foundry V14 native pop-outs exist for ApplicationV2 apps and this fork only fills the remaining V1-sheet gap.
+- Confirmed the fork is distributed through GitHub releases and direct manifest install, not as a separate Foundry package listing.
+- Updated the upstream status: compatibility pull request [#164](https://github.com/League-of-Foundry-Developers/fvtt-module-popout/pull/164) was closed unmerged, and upstream issue [#165](https://github.com/League-of-Foundry-Developers/fvtt-module-popout/issues/165) tracks the legacy V1-sheet use case.
 
 ### `2.24.0`
 
@@ -45,8 +66,6 @@ PopOut! works by moving Foundry application DOM nodes into another browser windo
 - Published release assets for direct installation from this public fork.
 - Incorporated the keyboard focus fix from upstream PR [#163](https://github.com/League-of-Foundry-Developers/fvtt-module-popout/pull/163), credited to Sigiller, so typing in popped-out input fields is less likely to trigger Foundry hotbar digit shortcuts.
 - Preserved the existing PopOut! module id, behavior, hooks, and browser-only warning.
-
-The upstream Foundry V14 compatibility pull request is open at [League-of-Foundry-Developers/fvtt-module-popout#164](https://github.com/League-of-Foundry-Developers/fvtt-module-popout/pull/164).
 
 ## Module Developer Notes
 

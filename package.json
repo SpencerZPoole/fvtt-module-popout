@@ -3,8 +3,7 @@
   "type": "module",
   "scripts": {
     "lint": "eslint popout.js",
-    "format:check": "prettier --check .",
-    "foundry:release": "node scripts/foundry-release.js"
+    "format:check": "prettier --check ."
   },
   "devDependencies": {
     "eslint": "^9.28.0",
